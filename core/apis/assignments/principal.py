@@ -2,7 +2,7 @@ from flask import Blueprint
 from core import db
 from core.apis import decorators
 from core.apis.responses import APIResponse
-from core.models.assignments import Assignment
+from core.models.assignments import Assignment,AssignmentStateEnum
 
 from .schema import AssignmentSchema,AssignmentSubmitSchema,AssignmentGradeSchema
 
@@ -10,7 +10,7 @@ from .schema import AssignmentSchema,AssignmentSubmitSchema,AssignmentGradeSchem
 principal_assignments_resources = Blueprint('principal_assignments_resources', __name__)
 
 
-@principal_assignments_resources.route('/principal/assignments', methods=['GET'], strict_slashes=False)
+@principal_assignments_resources.route('/assignments', methods=['GET'], strict_slashes=False)
 @decorators.authenticate_principal
 def list_assignments(p):
     """Returns list of submitted and graded assignments"""
@@ -29,8 +29,8 @@ def list_assignments(p):
 def grade_assignment(p, incoming_payload):
     """Grade an assignment"""
     grade_assignment_payload = AssignmentGradeSchema().load(incoming_payload)
-
-    graded_assignment = Assignment.mark_grade(
+    assignment = Assignment.query.get(grade_assignment_payload.id)
+    graded_assignment = Assignment.mark_grade_by_principal(
         _id=grade_assignment_payload.id,
         grade=grade_assignment_payload.grade,
         auth_principal=p
@@ -50,3 +50,4 @@ def list_teachers(p):
     teachers_dump = AssignmentSchema().dump(teachers, many=True)
     # Return the API response
     return APIResponse.respond(data=teachers_dump)
+
