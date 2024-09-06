@@ -21,7 +21,7 @@ def test_grade_assignment_draft_assignment(client, h_principal):
     response = client.post(
         '/principal/assignments/grade',
         json={
-            'id': 5,
+            'id': 3, # here i replaced 5 with 3 beacuse 5 is already in GRADED state where as 3 is in DRAFTED state
             'grade': GradeEnum.A.value
         },
         headers=h_principal

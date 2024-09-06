@@ -40,7 +40,7 @@ def grade_assignment(p, incoming_payload):
     return APIResponse.respond(data=graded_assignment_dump)
 
 
-@principal_assignments_resources.route('/principal/assignments', methods=['GET'], strict_slashes=False)
+@principal_assignments_resources.route('/teachers', methods=['GET'], strict_slashes=False)
 @decorators.authenticate_principal
 def list_teachers(p):
     """Returns list of submitted and graded assignments"""
